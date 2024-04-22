@@ -1,0 +1,1 @@
+export SQLALCHEMY_DATABASE_URI="postgresql://rswel:ca19961998@localhost:5432/ratings"
