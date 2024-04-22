@@ -17,12 +17,15 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    email = db.Column(db.Integer, unique = True)
+    email = db.Column(db.String(255), unique = True)
     password = db.Column(db.String(255), nullable = False)
 
     def __init__ (self, email, password):
         self.email = email
         self.password = password
+     
+    
+    def __repr__ (self):
         return f"<User id = {self.user_id} email = {self.email}>"
     
 class Movie(db.Model):
@@ -35,7 +38,9 @@ class Movie(db.Model):
     release_date = db.Column(db.DateTime)
     poster_path = db.Column(db.String (255))
 
-    def __repr__(self):
+    def __repr__(self, movie_id, title):
+        self.movie_id = movie_id
+        self.title = title
         return f"<Movie movie_id={self.movie_id} title={self.title}>"
     
 class Rating(db.Model):
@@ -43,16 +48,23 @@ class Rating(db.Model):
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    source = db.Column(db.Integer)
+    score = db.Column(db.Integer)
     movie_id = db.Column(db.Integer, db.ForeignKey("movies.movie_id"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    def __repr__ (self)
+    movie = db.relationship("Movie", backref="ratings")
+    user = db.relationship("User", backref="ratings")
+
+    def __repr__ (self, rating_id, score):
+        self.rating_id = rating_id
+        self.score = score
+
+        return f"<Rating rating_id={self.rating_id} score={self.score}"
 
     
 
-def connect_to_db(flask_app, db_uri="postgresql:///ratings", echo=True):
-    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+def connect_to_db(flask_app, echo=True):
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
     flask_app.config["SQLALCHEMY_ECHO"] = echo
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -66,6 +78,7 @@ def connect_to_db(flask_app, db_uri="postgresql:///ratings", echo=True):
 
 if __name__ == "__main__":
     from server import app
+    # db.create_all()
 
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every
