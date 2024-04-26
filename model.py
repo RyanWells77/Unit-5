@@ -38,9 +38,8 @@ class Movie(db.Model):
     release_date = db.Column(db.DateTime)
     poster_path = db.Column(db.String (255))
 
-    def __repr__(self, movie_id, title):
-        self.movie_id = movie_id
-        self.title = title
+    def __repr__(self):
+       
         return f"<Movie movie_id={self.movie_id} title={self.title}>"
     
 class Rating(db.Model):
@@ -55,9 +54,8 @@ class Rating(db.Model):
     movie = db.relationship("Movie", backref="ratings")
     user = db.relationship("User", backref="ratings")
 
-    def __repr__ (self, rating_id, score):
-        self.rating_id = rating_id
-        self.score = score
+    def __repr__ (self):
+        
 
         return f"<Rating rating_id={self.rating_id} score={self.score}"
 
