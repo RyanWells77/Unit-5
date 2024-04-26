@@ -38,8 +38,38 @@ def all_users():
 
     return render_template("all_users.html", users=users)
 
+@app.route("/users", methods = ["POST"])
+def regester_user():
+    
+    email = request.form.get("email")
+    password = request.form.get("password")
+    
+    user = crud.get_user_by_email(email)
+    if user:
+        flash("A user with that email already exists. Please try again.")
+    else:
+        user = crud.create_user(email, password)
+        db.session.add(user)
+        db.session.commit()
+        flash("Account created! Please log in.")
 
-# Replace this with routes and view functions!
+    return redirect("/")
+
+app.route("/login", methods = ["POST"])
+def login_user():
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user = crud.get_user_by_email(email)
+
+    if user and user.password == password:
+        session["user_email"] = user.email
+        flash("Logged in!")
+    else:
+        flash("Invalid email or password. Please try again.")
+    
+    return redirect("/")
 
 
 if __name__ == "__main__":
