@@ -19,6 +19,7 @@ def get_user_by_email(email):
     return User.query.filter(User.email == email).first()
 
 
+
 def create_movie(title, overview, release_date, poster_path):
 
     movie = Movie(title=title, overview= overview, release_date=release_date, poster_path=poster_path)
@@ -39,7 +40,12 @@ def create_rating(user, movie, score):
 
     return rating
 
+def update_rating(rating_id, new_score):
 
+    rating = Rating.query.get(rating_id)
+    rating.score = new_score
+
+    
 
 
 
